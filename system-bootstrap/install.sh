@@ -35,8 +35,8 @@ gum_ui () {
         clear
         gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "$(gum style --foreground 212 'aravix')'s system bootstrapper"
 
-        GIT="Install git"; TERMINAL="Configure terminal"; EXIT="Exit"
-        ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$EXIT")
+        GIT="Install git"; TERMINAL="Configure terminal"; EXIT="Exit"; NODE="Install Node"; RUST="Install Rust"; KDE="Configure KDE"
+        ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$KDE" "$NODE" "$RUST" "$EXIT")
 
         case "$ACTIONS" in
             "$GIT")
@@ -44,6 +44,15 @@ gum_ui () {
                 ;;
             "$TERMINAL")
                 setup_terminal
+                ;;
+            "$NODE")
+                install_node
+                ;;
+            "$RUST")
+                install_rust
+                ;;
+            "$KDE")
+                setup_kde
                 ;;
             "$EXIT")
                 echo "Aight, see ya later."
@@ -97,13 +106,52 @@ setup_terminal () {
     sleep 1
 }
 
+# Installs things like nvm and pnpm.
+install_node () {
+    echo "Installing nvm..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+    echo "Installing pnpm..."
+    curl -fsSL https://get.pnpm.io/install.sh | sh - echo "pnpm is already installed"
+
+    echo "Remember to restart the terminal before using nvm or pnpm. For some reason it refuses to let me source .zshrc. Meh."
+    sleep 2
+}
+
+# Installs Rust. That's it.
+install_rust () {
+    echo "Installing Rust..."
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+    echo "Rust is installed. Since sourcing .zshrc is refusing to work, restart the terminal to start using rustup and cargo."
+    sleep 2
+}
+
+setup_kde () {
+    if $IS_MAC
+    then
+        echo "You're on MacOS you silly bitch, you don't have KDE :)"
+        sleep 2
+    else
+        echo "Installing KDE catppuccin theme..."
+        git clone --depth=1 https://github.com/catppuccin/kde catppuccin-kde && cd catppuccin-kde || exit
+        ./install.sh
+        cd ..
+
+        rm -rf catppuccin-kde
+
+        echo "catppuccin theme installed."
+        sleep 2
+    fi
+}
+
 # Check if yay is installed, tries to install it otherwise. Only used on Linux
 check_yay () {
     if ! command -v yay &> /dev/null
     then
         # Git needs to be installed here
         install_git
-        
+
         echo "yay is not installed, installing"
         pacman -S --needed git base-devel
         git clone https://aur.archlinux.org/yay.git
