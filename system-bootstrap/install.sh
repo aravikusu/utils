@@ -61,6 +61,7 @@ gum_ui () {
     done
 }
 
+# can't do shit without git
 install_git () {
     if ! command -v git &> /dev/null
     then
@@ -94,6 +95,8 @@ setup_terminal () {
     mkdir ~/.config/ohmyposh
     cp -r "$(dirname -- "$0")/omp-conf.toml" ~/.config/ohmyposh/config.toml
     oh-my-posh font install JetBrainsMono
+
+    echo "Note: font is installed but you're gonna have to actually apply it to your terminals and editors."
     
     if $IS_MAC
     then
@@ -127,6 +130,7 @@ install_rust () {
     sleep 2
 }
 
+# KDE-specific things. Currently just applies the catppuccin theme.
 setup_kde () {
     if $IS_MAC
     then
