@@ -153,10 +153,8 @@ setup_kde () {
 check_yay () {
     if ! command -v yay &> /dev/null
     then
-        # Git needs to be installed here
-        install_git
-
         echo "yay is not installed, installing"
+        # Git needs to be installed, so...
         pacman -S --needed git base-devel
         git clone https://aur.archlinux.org/yay.git
         cd yay || exit
