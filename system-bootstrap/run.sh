@@ -69,12 +69,7 @@ install_git () {
     if ! command -v git &> /dev/null
     then
         echo "Installing git..."
-        if $IS_MAC
-        then
-            mac_install "git"
-        else
-            linux_install "git"
-        fi
+        install_pkg "git"
         echo "git installed, continuing..."
     else
         echo "git is already installed."
@@ -89,9 +84,9 @@ setup_terminal () {
     # Download oh-my-posh and other .zshrc dependencies
     if $IS_MAC
     then
-        mac_install "jandedobbeleer/oh-my-posh/oh-my-posh" "fzf" "zoxide"
+        install_pkg "jandedobbeleer/oh-my-posh/oh-my-posh" "fzf" "zoxide"
     else
-        linux_install "oh-my-posh" "fzf" "zoxide"
+        install_pkg "oh-my-posh" "fzf" "zoxide"
     fi
 
     echo "Packages installed, setting up oh-my-posh config..."
@@ -200,7 +195,7 @@ check_zsh () {
     if ! command -v zsh &> /dev/null
     then
         echo "zsh is not installed, installing"
-        linux_install "zsh"
+        install_pkg "zsh"
         chsh
         echo "zsh installed, continuing..."
     fi
@@ -212,23 +207,17 @@ check_gum () {
     then
         echo "gum is not installed, installing"
 
-        if $IS_MAC
-        then
-            mac_install "gum"
-        else
-            linux_install "gum"
-        fi
+        install_pkg "gum"
     fi
 }
 
-# General utility for installing things on Arch Linux
-linux_install () {
-    yay -S "$@"
-}
-
-# General utility for installing things on MacOS
-mac_install () {
-    brew install "$@"
+install_pkg () {
+    if $IS_MAC
+    then
+        brew install "$@"
+    else
+        yay -S "$@"
+    fi
 }
 
 init
