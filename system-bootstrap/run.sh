@@ -96,7 +96,7 @@ setup_terminal () {
 
     echo "Packages installed, setting up oh-my-posh config..."
     mkdir ~/.config/ohmyposh
-    cp -r "$(dirname -- "$0")/omp-conf.toml" ~/.config/ohmyposh/config.toml
+    cp -r "$(dirname -- "$0")/configs/ohmyposh.toml" ~/.config/ohmyposh/config.toml
     oh-my-posh font install JetBrainsMono
 
     echo "Note: font is installed but you're gonna have to actually apply it to your terminals and editors."
@@ -107,6 +107,8 @@ setup_terminal () {
     else
         cp -r "$(dirname -- "$0")/dots/linux.zshrc" ~/.zshrc
     fi
+
+    cp -r "$(dirname -- "$0")/configs/alacritty.toml" ~/.config/alacritty/alacritty.toml
 
     echo "Terminal setup done :)"
     sleep 2

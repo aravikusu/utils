@@ -1,6 +1,10 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+# x86
+# eval "($(/usr/local/bin/brew shellenv))"
+
+# Apple Silicon
 eval "($(/opt/homebrew/bin/brew shellenv))"
 
 if [ "$TERM_PROGRAM" != "Apple_Terminal" ]; then
