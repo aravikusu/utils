@@ -2,12 +2,12 @@
 
 IS_MAC=false
 
-init() {
+init () {
     case "$(uname)" in
         "Linux") 
             ;;
         "Darwin")
-            $IS_MAC=true
+            IS_MAC=true
             ;;
         *) 
             echo "Only Linux and MacOS is supported at the moment" 
@@ -53,7 +53,6 @@ gum_ui () {
 }
 
 install_git () {
-    
     if ! command -v git &> /dev/null
     then
         echo "Installing git..."
@@ -102,10 +101,13 @@ setup_terminal () {
 check_yay () {
     if ! command -v yay &> /dev/null
     then
+        # Git needs to be installed here
+        install_git
+        
         echo "yay is not installed, installing"
         pacman -S --needed git base-devel
         git clone https://aur.archlinux.org/yay.git
-        cd yay
+        cd yay || exit
         makepkg -si
         cd ..
 
@@ -153,12 +155,12 @@ check_gum () {
 
 # General utility for installing things on Arch Linux
 linux_install () {
-    yay -S $@
+    yay -S "$@"
 }
 
 # General utility for installing things on MacOS
 mac_install () {
-    brew install $@
+    brew install "$@"
 }
 
 init
