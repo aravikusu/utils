@@ -35,8 +35,8 @@ gum_ui () {
         clear
         gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "$(gum style --foreground 212 'aravix')'s system bootstrapper"
 
-        GIT="Install git"; TERMINAL="Configure terminal"; EXIT="Exit"; NODE="Install Node"; RUST="Install Rust"; KDE="Configure KDE"
-        ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$KDE" "$NODE" "$RUST" "$EXIT")
+        GIT="Install git"; TERMINAL="Configure terminal"; EXIT="Exit"; NODE="Install Node"; RUST="Install Rust"; KDE="Configure KDE"; DOTS="Reset dotfiles pls"
+        ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$KDE" "$NODE" "$RUST" "$DOTS" "$EXIT")
 
         case "$ACTIONS" in
             "$GIT")
@@ -53,6 +53,9 @@ gum_ui () {
                 ;;
             "$KDE")
                 setup_kde
+                ;;
+            "$DOTS")
+                reset_dots
                 ;;
             "$EXIT")
                 echo "Aight, see ya later."
@@ -100,13 +103,13 @@ setup_terminal () {
     
     if $IS_MAC
     then
-        cp -r "$(dirname -- "$0")/zshrc/mac.zshrc" ~/.zshrc
+        cp -r "$(dirname -- "$0")/dots/mac.zshrc" ~/.zshrc
     else
-        cp -r "$(dirname -- "$0")/zshrc/linux.zshrc" ~/.zshrc
+        cp -r "$(dirname -- "$0")/dots/linux.zshrc" ~/.zshrc
     fi
 
     echo "Terminal setup done :)"
-    sleep 1
+    sleep 2
 }
 
 # Installs things like nvm and pnpm.
@@ -147,6 +150,19 @@ setup_kde () {
         echo "catppuccin theme installed."
         sleep 2
     fi
+}
+
+# For when I randomly break my dot files. This resets them to my last-known working version.
+reset_dots () {
+    if $IS_MAC
+    then
+        cp -r "$(dirname -- "$0")/dots/mac.zshrc" ~/.zshrc
+    else
+        cp -r "$(dirname -- "$0")/dots/linux.zshrc" ~/.zshrc
+    fi
+
+    echo "Done. Now stop breaking things."
+    sleep 2
 }
 
 # Check if yay is installed, tries to install it otherwise. Only used on Linux
