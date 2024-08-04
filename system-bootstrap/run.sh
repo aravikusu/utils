@@ -96,7 +96,8 @@ setup_terminal () {
     then
         install_pkg "jandedobbeleer/oh-my-posh/oh-my-posh" "fzf" "zoxide"
     else
-        install_pkg "oh-my-posh" "fzf" "zoxide"
+        curl -s https://ohmyposh.dev/install.sh | bash -s
+        install_pkg "fzf" "zoxide"
     fi
 
     echo "Packages installed, setting up oh-my-posh config..."
