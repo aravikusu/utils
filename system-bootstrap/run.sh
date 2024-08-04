@@ -1,10 +1,12 @@
 #!/bin/bash
 
 IS_MAC=false
+DISTRO=""
 
 init () {
     case "$(uname)" in
         "Linux") 
+            get_distro
             ;;
         "Darwin")
             IS_MAC=true
@@ -13,18 +15,26 @@ init () {
             echo "Only Linux and MacOS is supported at the moment" 
             exit;;
     esac
-
     # Make sure we have my preferred package managers
     if $IS_MAC
     then
         check_brew
     else
-        check_yay
+        if [[ "$DISTRO" == "Arch Linux" ]] then
+            check_yay
+        fi
+        
         check_zsh
     fi
 
     # Now we have to install gum
     check_gum
+
+    if ! command -v gum &> /dev/null
+    then
+        echo "seems like gum failed to install, sorry"
+        exit
+    fi
 
     gum_ui
 }
@@ -162,7 +172,7 @@ reset_dots () {
     sleep 2
 }
 
-# Check if yay is installed, tries to install it otherwise. Only used on Linux
+# Check if yay is installed, tries to install it otherwise. Only used on Arch Linux
 check_yay () {
     if ! command -v yay &> /dev/null
     then
@@ -206,7 +216,6 @@ check_gum () {
     if ! command -v gum &> /dev/null
     then
         echo "gum is not installed, installing"
-
         install_pkg "gum"
     fi
 }
@@ -216,7 +225,20 @@ install_pkg () {
     then
         brew install "$@"
     else
-        yay -S "$@"
+        case $DISTRO in
+            "Arch Linux")
+                yay -S "$@"
+                ;;
+            "Fedora Linux")
+                sudo dnf install "$@"
+        esac
+    fi
+}
+
+get_distro () {
+    if [ -f /etc/os-release ]; then
+        . /etc/os-release
+        DISTRO=$NAME
     fi
 }
 
