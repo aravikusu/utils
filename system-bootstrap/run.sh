@@ -46,7 +46,13 @@ gum_ui () {
         gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "$(gum style --foreground 212 'aravix')'s system bootstrapper"
 
         GIT="Install git"; TERMINAL="Configure terminal"; EXIT="Exit"; NODE="Install Node"; RUST="Install Rust"; KDE="Configure KDE"; DOTS="Reset dotfiles pls"
-        ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$KDE" "$NODE" "$RUST" "$DOTS" "$EXIT")
+
+        if $IS_MAC
+        then
+            ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$NODE" "$RUST" "$DOTS" "$EXIT")
+        else
+            ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$KDE" "$NODE" "$RUST" "$DOTS" "$EXIT")
+        fi
 
         case "$ACTIONS" in
             "$GIT")
@@ -217,7 +223,16 @@ check_gum () {
     if ! command -v gum &> /dev/null
     then
         echo "gum is not installed, installing"
-        install_pkg "gum"
+
+        # gum isn't in the DNF repos
+        if [ "$DISTRO" == "Fedora Linux" ]
+        then
+            curl -L https://github.com/charmbracelet/gum/releases/download/v0.14.3/gum-0.14.3-1.x86_64.rpm > gum.rpm
+            sudo dnf install gum.rpm
+            rm gum.rpm
+        else
+            install_pkg "gum"
+        fi
     fi
 }
 
