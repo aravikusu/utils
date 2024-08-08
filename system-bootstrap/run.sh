@@ -46,12 +46,13 @@ gum_ui () {
         gum style --border normal --margin "1" --padding "1 2" --border-foreground 212 "$(gum style --foreground 212 'aravix')'s system bootstrapper"
 
         GIT="Install git"; TERMINAL="Configure terminal"; EXIT="Exit"; NODE="Install Node"; RUST="Install Rust"; KDE="Configure KDE"; DOTS="Reset dotfiles pls"
+        FLATPAK_GEN="Flatpaks (General)" FLATPAK_GAME="Flatpaks (Games)"
 
         if $IS_MAC
         then
             ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$NODE" "$RUST" "$DOTS" "$EXIT")
         else
-            ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$KDE" "$NODE" "$RUST" "$DOTS" "$EXIT")
+            ACTIONS=$(gum choose --limit 1 "$GIT" "$TERMINAL" "$KDE" "$FLATPAK_GEN" "$FLATPAK_GAME" "$NODE" "$RUST" "$DOTS" "$EXIT")
         fi
 
         case "$ACTIONS" in
@@ -69,6 +70,12 @@ gum_ui () {
                 ;;
             "$KDE")
                 setup_kde
+                ;;
+            "$FLATPAK_GEN")
+                install_flatpak_general
+                ;;
+            "$FLATPAK_GAME")
+                install_flatpak_games
                 ;;
             "$DOTS")
                 reset_dots
@@ -166,6 +173,22 @@ setup_kde () {
     fi
 }
 
+# Just all the general Flatpak apps I always get.
+# Flatseal, Firefox, Thunderbird, Spotify, VS Code, Bitwarden, Resources, Godot Engine, Obsidian, VLC, Krita, Blender, GitHub Desktop
+install_flatpak_general () {
+    echo "General Flatpak applications installed."
+    flatpak install flathub org.mozilla.firefox org.mozilla.Thunderbird com.spotify.Client com.visualstudio.code com.bitwarden.desktop net.nokyan.Resources org.godotengine.Godot md.obsidian.Obsidian org.videolan.VLC org.kde.krita org.blender.Blender io.github.shiftey.Desktop
+    sleep 2
+}
+
+# Similar to the general one, except just game related. Since every system doesn't need these, it's a separate command.
+# Steam, ProtonUp-QT, Bolt Launcher (RS3/OSRS), XIVLauncher, Lutris, RetroArch
+install_flatpak_games () {
+    echo "General Flatpak applications installed."
+    flatpak install flathub com.valvesoftware.Steam net.davidotek.pupgui2 com.adamcake.Bolt dev.goats.xivlauncher net.lutris.Lutris org.libretro.RetroArch
+    sleep 2
+}
+
 # For when I randomly break my dot files. This resets them to my last-known working version.
 reset_dots () {
     if $IS_MAC
@@ -242,11 +265,18 @@ install_pkg () {
         brew install "$@"
     else
         case $DISTRO in
-            "Arch Linux")
+            "Arch Linux"|"EndeavourOS")
                 yay -S "$@"
                 ;;
             "Fedora Linux")
                 sudo dnf install "$@"
+                ;;
+            "openSUSE Tumbleweed"|"openSUSE Leap"|"Aeon")
+                sudo zypper install "$@"
+                ;;
+            "Debian GNU/Linux"|"Linux Mint")
+                sudo apt install "$@"
+                ;;
         esac
     fi
 }
