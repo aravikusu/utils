@@ -20,7 +20,7 @@ init () {
     then
         check_brew
     else
-        if [[ "$DISTRO" == "Arch Linux" ]] then
+        if [ "$DISTRO" == "Arch Linux" ]; then
             check_yay
         fi
         
@@ -127,6 +127,7 @@ setup_terminal () {
         cp -r "$(dirname -- "$0")/dots/linux.zshrc" ~/.zshrc
     fi
 
+    mkdir ~/.config/alacritty
     cp -r "$(dirname -- "$0")/configs/alacritty.toml" ~/.config/alacritty/alacritty.toml
 
     echo "Terminal setup done :)"
@@ -174,10 +175,10 @@ setup_kde () {
 }
 
 # Just all the general Flatpak apps I always get.
-# Flatseal, Firefox, Thunderbird, Spotify, VS Code, Bitwarden, Resources, Godot Engine, Obsidian, VLC, Krita, Blender, GitHub Desktop
+# Flatseal, Firefox, Thunderbird, Spotify, VS Code, Resources, Godot Engine, VLC, Krita, Blender, GitHub Desktop, Proton Pass
 install_flatpak_general () {
     echo "General Flatpak applications installed."
-    flatpak install flathub org.mozilla.firefox org.mozilla.Thunderbird com.spotify.Client com.visualstudio.code com.bitwarden.desktop net.nokyan.Resources org.godotengine.Godot md.obsidian.Obsidian org.videolan.VLC org.kde.krita org.blender.Blender io.github.shiftey.Desktop
+    flatpak install flathub org.mozilla.firefox org.mozilla.Thunderbird com.spotify.Client com.visualstudio.code net.nokyan.Resources org.godotengine.Godot org.videolan.VLC org.kde.krita org.blender.Blender io.github.shiftey.Desktop me.proton.Pass
     sleep 2
 }
 
